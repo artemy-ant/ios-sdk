@@ -68,8 +68,24 @@
     }
     NSString *proposedString = [textField.text stringByReplacingCharactersInRange:range
                                                                   withString:string];
-    PSCardInputLayout *layout = (PSCardInputLayout *)textField.superview;
+    
+    PSCardInputLayout *layout = (PSCardInputLayout *)[self findSuperview:[PSCardInputLayout class] start:textField.superview];
+    
+    if (!layout) {
+        @throw [NSException exceptionWithName:@"PSMissingTextFieldException"
+                                       reason:@"Cant find PSCardInputLayout view"
+                                     userInfo:nil];
+    }
     return [layout lengthHandlerFor:textField aNewString:proposedString aMaxLength:self.maxLength];
+}
+
+- (UIView*)findSuperview: (Class) class start: (UIView*) view {
+    
+    if ([view isKindOfClass:class] || !view) {
+        return view;
+    } else {
+        return [self findSuperview:class start:view.superview];
+    }
 }
     
 - (BOOL)textFieldShouldClear:(UITextField *)textField {

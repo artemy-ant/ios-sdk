@@ -104,10 +104,18 @@
 }
     
 - (void)find:(Class)fieldClass aParent:(UIView *)parent aFields:(inout NSMutableArray *)fields {
-    for (id view in self.subviews) {
+    NSMutableArray<UIView*>* subviews = [NSMutableArray arrayWithArray:parent.subviews];
+    
+    while (subviews.count != 0) {
+        
+        UIView* view = [subviews firstObject];
+        [subviews removeObjectAtIndex:0];
+        
         if ([view isKindOfClass:fieldClass]) {
             [fields addObject:view];
         }
+        
+        [subviews addObjectsFromArray:view.subviews];
     }
 }
     
